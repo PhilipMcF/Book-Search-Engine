@@ -27,13 +27,17 @@ interface AddUserArgs {
 }
 
 interface AddBookArgs {
-    userId: string;
-    book: Book;
+    input: {
+        userId: string;
+        book: Book;
+    }
 }
 
 interface RemoveBookArgs {
-    userId: string;
-    book: Book;
+    input: {
+        userId: string;
+        book: Book;
+    }
 }
 
 interface Context {
@@ -67,21 +71,21 @@ const resolvers = {
             const token = signToken(user.username, user.email, user._id);
             return { token, user };
         },
-        saveBook: async (_parent: any, { userId, book }: AddBookArgs, context: Context): Promise<User | null> => {
+        saveBook: async (_parent: any, { input }: AddBookArgs, context: Context): Promise<User | null> => {
             if (context.user){
                 return await User.findOneAndUpdate(
-                    { _id: userId },
-                    { $addToSet: { savedBooks: book } },
+                    { _id: input.userId },
+                    { $addToSet: { savedBooks: input.book } },
                     { new: true, runValidators: true }
                 );
             };
             throw AuthenticationError;
         },
-        removeBook: async (_parent: any, { book }: RemoveBookArgs, context: Context): Promise<User | null> => {
+        removeBook: async (_parent: any, { input }: RemoveBookArgs, context: Context): Promise<User | null> => {
             if (context.user){
                 return await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: { bookId: book.bookId } } },
+                    { $pull: { savedBooks: { bookId: input.book.bookId } } },
                     { new: true }
                 );
             };
