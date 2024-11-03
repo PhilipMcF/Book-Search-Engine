@@ -5,7 +5,7 @@ import db from './config/connection.js';
 import { Request, Response } from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-// import { typeDefs, resolvers } from './schemas/index.js' // uncomment when created
+import { typeDefs, resolvers } from './schemas/index.js'
 import { authenticateToken } from './services/auth.js';
 
 const server = new ApolloServer({
@@ -14,7 +14,7 @@ const server = new ApolloServer({
 });
 
 const startApolloServer = async () => {
-  await Server.start();
+  await server.start();
   await db();
 
   const app = express();
