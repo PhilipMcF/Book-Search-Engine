@@ -28,14 +28,14 @@ interface AddUserArgs {
 
 interface AddBookArgs {
     input: {
-        userId: string;
+        userId: string;  // probably not needed; will need to remove here and in typeDefs
         book: Book;
     }
 }
 
 interface RemoveBookArgs {
     input: {
-        userId: string;
+        userId: string;   // probably not needed; will need to remove here and in typeDefs
         book: Book;
     }
 }
