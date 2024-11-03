@@ -28,14 +28,14 @@ interface AddUserArgs {
 
 interface AddBookArgs {
     input: {
-        userId: string;  // probably not needed; will need to remove here and in typeDefs
+        // userId: string;  // probably not needed; will need to remove here and in typeDefs
         book: Book;
     }
 }
 
 interface RemoveBookArgs {
     input: {
-        userId: string;   // probably not needed; will need to remove here and in typeDefs
+        // userId: string;   // probably not needed; will need to remove here and in typeDefs
         book: Book;
     }
 }
@@ -74,7 +74,7 @@ const resolvers = {
         saveBook: async (_parent: any, { input }: AddBookArgs, context: Context): Promise<User | null> => {
             if (context.user){
                 return await User.findOneAndUpdate(
-                    { _id: input.userId },
+                    { _id: context.user._id },
                     { $addToSet: { savedBooks: input.book } },
                     { new: true, runValidators: true }
                 );

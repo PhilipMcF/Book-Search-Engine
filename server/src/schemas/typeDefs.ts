@@ -28,7 +28,6 @@ const typeDefs =`
     }
 
     input BookInput {
-        userId: ID
         book: Book
     }
 
