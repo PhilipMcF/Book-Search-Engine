@@ -34,10 +34,7 @@ interface AddBookArgs {
 }
 
 interface RemoveBookArgs {
-    input: {
-        // userId: string;   // probably not needed; will need to remove here and in typeDefs
-        book: Book;
-    }
+    bookId: string;
 }
 
 interface Context {
@@ -81,11 +78,11 @@ const resolvers = {
             };
             throw AuthenticationError;
         },
-        removeBook: async (_parent: any, { input }: RemoveBookArgs, context: Context): Promise<User | null> => {
+        removeBook: async (_parent: any, { bookId }: RemoveBookArgs, context: Context): Promise<User | null> => {
             if (context.user){
                 return await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: { bookId: input.book.bookId } } },
+                    { $pull: { savedBooks: { bookId: bookId } } },
                     { new: true }
                 );
             };
