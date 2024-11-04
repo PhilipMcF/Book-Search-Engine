@@ -83,8 +83,17 @@ const SearchBooks = () => {
     try {
       // replaced saveBook from API with saveBook mutation
       await saveBook({
-        variables: { input: { book: bookToSave } }
-      })
+            variables: {
+                input: {
+                    bookId: bookToSave.bookId,
+                    authors: bookToSave.authors,
+                    description: bookToSave.description,
+                    title: bookToSave.title,
+                    image: bookToSave.image,
+                    link: bookToSave.link // Add this if it exists in your Book structure
+                }
+            }
+        });
 
       // if (!response.ok) {
       //   throw new Error('something went wrong!');
