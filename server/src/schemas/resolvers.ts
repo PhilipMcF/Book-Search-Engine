@@ -30,12 +30,12 @@ interface AddUserArgs {
 interface AddBookArgs {
     input: {
         // userId: string;  // probably not needed; will need to remove here and in typeDefs
-        bookId: String
-        authors: [String]
-        description: String
-        title: String
-        image: String
-        link: String
+        bookId: string
+        authors: string[]
+        description: string
+        title: string
+        image: string
+        link: string
     }
 }
 
@@ -81,13 +81,22 @@ const resolvers = {
         },
         saveBook: async (_parent: any, { input }: AddBookArgs, context: Context): Promise<User | null> => {
             if (context.user){
+                const { bookId, authors, description, title, image, link } = input;
+                const book = {
+                    bookId,
+                    authors,
+                    description,
+                    title,
+                    image,
+                    link,
+                };
                 return await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $addToSet: { savedBooks: input } },
+                    { $addToSet: { savedBooks: book } },
                     { new: true, runValidators: true }
                 );
             };
-            throw AuthenticationError;
+            throw new AuthenticationError('Failed because no user in context?');
         },
         removeBook: async (_parent: any, { bookId }: RemoveBookArgs, context: Context): Promise<User | null> => {
             if (context.user){
