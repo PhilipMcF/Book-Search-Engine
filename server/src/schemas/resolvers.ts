@@ -23,6 +23,7 @@ interface AddUserArgs {
         username: string;
         email: string;
         password: string;
+        savedBooks: Book[];
     }
 }
 
@@ -69,9 +70,14 @@ const resolvers = {
             return { token, user };
         },
         addUser: async (_parent: any, { input }: AddUserArgs): Promise<{ token: string; user: User }> => {
-            const user = await User.create({ input });
-            const token = signToken(user.username, user.email, user._id);
-            return { token, user };
+            try {
+                const user = await User.create({ ...input });
+                const token = signToken(user.username, user.email, user._id);
+                return { token, user };
+            } catch (error) {
+                console.error("Error creating user:", error);
+                throw new Error("Failed to create user");
+            }
         },
         saveBook: async (_parent: any, { input }: AddBookArgs, context: Context): Promise<User | null> => {
             if (context.user){
