@@ -29,7 +29,12 @@ interface AddUserArgs {
 interface AddBookArgs {
     input: {
         // userId: string;  // probably not needed; will need to remove here and in typeDefs
-        book: Book;
+        bookId: String
+        authors: [String]
+        description: String
+        title: String
+        image: String
+        link: String
     }
 }
 
@@ -72,7 +77,7 @@ const resolvers = {
             if (context.user){
                 return await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $addToSet: { savedBooks: input.book } },
+                    { $addToSet: { savedBooks: input } },
                     { new: true, runValidators: true }
                 );
             };
