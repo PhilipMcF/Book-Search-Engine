@@ -34,9 +34,10 @@ const startApolloServer = async () => {
       context: authenticateToken as any
     }
   ));
+  // app.use('/graphql', expressMiddleware(server as any));
 
   // if we're in production, serve client/build as static assets
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'development') {
     app.use(express.static(path.join(__dirname, '../../client/dist')));
 
     app.get('*', (_req: Request, res: Response) => {
