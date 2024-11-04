@@ -50,7 +50,7 @@ const resolvers = {
             throw AuthenticationError;
         }
     },
-    Mutations: {
+    Mutation: {
         login: async (_parent: any, { email, password }: { email: string, password: string }): Promise<{ token: string; user: User }> =>{
             const user = await User.findOne({ email });
             if (!user){
