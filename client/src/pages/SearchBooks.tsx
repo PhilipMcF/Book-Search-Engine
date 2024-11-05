@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import {
   Container,
@@ -9,9 +9,9 @@ import {
   Row
 } from 'react-bootstrap';
 
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { SAVE_BOOK } from '../gql/mutations'; // REPLACES saveBook
-
+import { QUERY_ME } from '../gql/queries';
 import Auth from '../utils/auth';
 import { searchGoogleBooks } from '../utils/API'; // REMOVED saveBook
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
@@ -32,8 +32,19 @@ const SearchBooks = () => {
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
-  useEffect(() => {
-    return () => saveBookIds(savedBookIds);
+  // NO LONGER USING USEEFFECT
+  // useEffect(() => {
+  //   return () => saveBookIds(savedBookIds);
+  // });
+
+  const { loading, data } = useQuery(QUERY_ME, {
+    skip: !Auth.loggedIn(),
+    onCompleted: (data) => {
+      const savedBooks = data?.me?.savedBooks || [];
+      const savedIds = savedBooks.map((book: Book) => book.bookId);
+      setSavedBookIds(savedIds);
+      saveBookIds(savedIds); // Save to localStorage
+    },
   });
 
   // create method to search for books and set state on form submit
@@ -101,10 +112,13 @@ const SearchBooks = () => {
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      saveBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(`Error saving book: ${err}`);
     }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
